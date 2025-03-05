@@ -1,8 +1,6 @@
 # medical_figures
 Medical figures with research data
 
-#Guide to Creating Annotated Figures
-
 Step 1: Find or create a template of what you want to visualize.
 
 Step 2: Annotate the areas using a program (I used FIJI (ImageJ), which is open-source) by clicking along the edges with the polygon tool. The more points you click, the smoother the final figure will be. This step took the longest time. There might be a better way to do this, for example using photoshop.
