@@ -1,0 +1,225 @@
+---
+title: "R figure"
+output: html_document
+date: "2025-03-05"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#Libraries
+library(tidyverse)
+library(scales)
+library(ggplot2)
+library(ggpubr) 
+```
+
+
+```{r}
+#Load annotations files with x-y coordinates
+axial_zones_combined <- read.csv(file="axial_zones_combined.csv")
+saggital_zones_left <- read.csv(file="saggital_zones_left.csv")
+saggital_zones_right <-read.csv(file="saggital_zones_right.csv")
+coronal_zones_left <- read.csv(file = "oronal_zones_combined.csv")
+```
+
+
+```{r}
+#Load results (with random results here for demonstration)
+final_results_sens <- tibble(
+  subpopulation = c(
+    "Location: ACA-cortical",
+    "Location: MCA-cortical",
+    "Location: PCA-cortical",
+    "Location: WS ACA/MCA", 
+    "Location: WS MCA/PCA",
+    "Location: Subcortical (CS,CR,CC)",
+    "Location: Subcortical (basal ganglia)",
+    "Location: Subcortical (thalamus)",
+    "Location: Cerebellum",
+    "Location: Brainstem"
+  ),
+  mean_volume = c(4.45, 6.78, 3.34, 2.91, 3.67, 1.23, 1.01, 1.56, 1.89, 0.32),
+  Sensitivity = c(0.88, 0.96, 0.92, 0.74, 0.87, 0.89, 0.63, 0.55, 0.61, 0.79)
+)
+
+```
+
+
+
+```{r}
+# Datawrangling - rename areas, and combine x-y-coordinates with the results -tibble
+sensitivity_map_axial_left <- final_results_sens %>%
+  mutate(region = recode(subpopulation,
+                  "Location: ACA-cortical" = "aca_ant_left",
+                  "Location: MCA-cortical" = "mca_left",
+                  "Location: PCA-cortical" = "pca_left",
+                  "Location: WS ACA/MCA" = "watershed_ant_left",
+                  "Location: WS MCA/PCA" = "watershed_post_left",
+                  "Location: Subcortical (CS,CR,CC)" = "subcortical_left",
+                  "Location: Subcortical (basal ganglia)" = "basalganglia_left",
+                  "Location: Subcortical (thalamus)" = "thalamus_left"))
+
+sensitivity_map_axial_left2 <- final_results_sens %>%
+  mutate(region = recode(subpopulation,
+                  "Location: ACA-cortical" = "aca_post_left"))
+
+sensitivity_map_axial_right <- final_results_sens %>%
+  mutate(region = recode(subpopulation,
+                  "Location: ACA-cortical" = "aca_ant_right",
+                  "Location: MCA-cortical" = "mca_right",
+                  "Location: PCA-cortical" = "pca_right",
+                  "Location: WS ACA/MCA" = "watershed_ant_right",
+                  "Location: WS MCA/PCA" = "watershed_post_right",
+                  "Location: Subcortical (CS,CR,CC)" = "subcortical_right",
+                  "Location: Subcortical (basal ganglia)" = "basalganglia_right",
+                  "Location: Subcortical (thalamus)" = "thalamus_right"))
+
+sensitivity_map_axial_right2 <- final_results_sens %>%
+  mutate(region = recode(subpopulation,
+                  "Location: ACA-cortical" = "aca_post_right"))
+
+sensitivity_map_axial_both_sides <- rbind(sensitivity_map_axial_left, sensitivity_map_axial_left2, sensitivity_map_axial_right, sensitivity_map_axial_right2)
+
+brain_sensivity_map <- axial_zones_combined %>%
+  left_join(sensitivity_map_axial_both_sides, by = c("region_hemisphere" = "region"))
+
+sensitivity_map_saggital <- final_results_sens %>%
+  mutate(region = recode(subpopulation,
+                  "Location: ACA-cortical" = "aca",
+                  "Location: PCA-cortical" = "pca",
+                  "Location: WS MCA/PCA" = "ws_post",
+                  "Location: Subcortical (CS,CR,CC)" = "subcortical",
+                  "Location: Subcortical (thalamus)" = "thalamus",
+                  "Location: Cerebellum" = "cerebellum",
+                  "Location: Brainstem" = "brainstem"),)
+
+brain_sensivity_map_saggital <- saggital_zones_right %>%
+  left_join(sensitivity_map_saggital, by = c("region" = "region"))
+
+sensitivity_map_coronal_left <- final_results_sens %>%
+  mutate(region = recode(subpopulation,
+                  "Location: ACA-cortical" = "aca_left",
+                  "Location: MCA-cortical" = "mca_left",
+                  "Location: PCA-cortical" = "pca_left",
+                  "Location: WS ACA/MCA" = "watershed_ant_left",
+                  "Location: WS MCA/PCA" = "watershed_post_left",
+                  "Location: Brainstem" = "brainstem_left",
+                  "Location: Subcortical (CS,CR,CC)" = "subcortical_left",
+                  "Location: Subcortical (basal ganglia)" = "basalganglia_left",
+                  "Location: Subcortical (thalamus)" = "thalamus_left"))
+
+sensitivity_map_coronal_right <- final_results_sens %>%
+  mutate(region = recode(subpopulation,
+                  "Location: ACA-cortical" = "aca_right",
+                  "Location: MCA-cortical" = "mca_right",
+                  "Location: PCA-cortical" = "pca_right",
+                  "Location: WS ACA/MCA" = "watershed_ant_right",
+                  "Location: WS MCA/PCA" = "watershed_post_right",
+                  "Location: Brainstem" = "brainstem_right",
+                  "Location: Subcortical (CS,CR,CC)" = "subcortical_right",
+                  "Location: Subcortical (basal ganglia)" = "basalganglia_right",
+                  "Location: Subcortical (thalamus)" = "thalamus_right"))
+
+
+# Combine sides
+sensitivity_map_coronal_both_sides <- rbind(sensitivity_map_coronal_left, sensitivity_map_coronal_right)
+
+# Combine dataframes
+brain_sensivity_map_coronal <- coronal_zones_combined %>%
+  left_join(sensitivity_map_coronal_both_sides, by = c("region_hemisphere" = "region"))
+```
+
+
+
+
+```{r}
+# PLOT SENSITIVITY MAP
+axial_plot <- ggplot(brain_sensivity_map) +
+  geom_polygon(aes(x = x, y = y, fill = Sensitivity, group = region_hemisphere), color = "black", size = 0.5) +
+  scale_fill_viridis_c(option = "B", limits = c(0.3, 1), labels = percent_format(accuracy=1)) +
+  theme_minimal() +
+  coord_fixed(ratio = 1) +
+  theme(axis.text = element_blank(), axis.ticks = element_blank(), axis.title = element_blank(), panel.grid = element_blank()) +
+  labs(title = "", fill = "Sensitivity (%)")
+
+
+saggital_plot <- ggplot(brain_sensivity_map_saggital) +
+  geom_polygon(aes(x = x, y = y, fill = Sensitivity, group = region), color = "black", size = 0.5) +
+  scale_fill_viridis_c(option = "B", limits = c(0.3, 1), labels = percent_format(accuracy=1)) +
+  theme_minimal() +
+  coord_fixed(ratio = 1.2) +
+  theme(axis.text = element_blank(), axis.ticks = element_blank(), axis.title = element_blank(), panel.grid = element_blank()) +
+  labs(title = "", fill = "Sensitivity (%)")
+
+coronal_plot <- ggplot(brain_sensivity_map_coronal) +
+  geom_polygon(aes(x = x, y = y, fill = Sensitivity, group = region_hemisphere), color = "black", size = 0.5) +
+  scale_fill_viridis_c(option = "B", limits = c(0.3, 1), labels = percent_format(accuracy=1)) +
+  theme_minimal() +
+  coord_fixed(ratio = 1) +
+  theme(axis.text = element_blank(), axis.ticks = element_blank(), axis.title = element_blank(), panel.grid = element_blank()) +
+  labs(title = "", fill = "Sensitivity(%)")
+
+
+#PLOT MEAN VOLUME MAP
+axial_plot_volume <- ggplot(brain_sensivity_map) +
+  geom_polygon(aes(x = x, y = y, fill = mean_volume , group = region_hemisphere), color = "black", size = 0.5) +
+  scale_fill_gradient(low = "lightblue", high = "navy", limits = c(0, 18)) +
+  theme_minimal() +
+  coord_fixed(ratio = 1) +
+  theme(axis.text = element_blank(), axis.ticks = element_blank(), axis.title = element_blank(), panel.grid = element_blank()) +
+  labs(title = "", fill = "Volume (cm³)")
+
+
+saggital_plot_volume <- ggplot(brain_sensivity_map_saggital) +
+  geom_polygon(aes(x = x, y = y, fill = mean_volume, group = region), color = "black", size = 0.5) +
+  scale_fill_gradient(low = "lightblue", high = "navy", limits = c(0, 18)) +
+  theme_minimal() +
+  coord_fixed(ratio = 1.2) +
+  theme(axis.text = element_blank(), axis.ticks = element_blank(), axis.title = element_blank(), panel.grid = element_blank()) +
+  labs(title = "", fill = "Volume (cm³)")
+
+coronal_plot_volume <- ggplot(brain_sensivity_map_coronal) +
+  geom_polygon(aes(x = x, y = y, fill = mean_volume, group = region_hemisphere), color = "black", size = 0.5) +
+  scale_fill_gradient(low = "lightblue", high = "navy", limits = c(0, 18)) +
+  theme_minimal() +
+  coord_fixed(ratio = 1) +
+  theme(axis.text = element_blank(), axis.ticks = element_blank(), axis.title = element_blank(), panel.grid = element_blank()) +
+  labs(title = "", fill = "Volume (cm³)")
+
+
+# Combine the plots
+combined_plots_sensitivity <- ggarrange(axial_plot, saggital_plot, coronal_plot, 
+                                        nrow = 1, 
+                                        common.legend = TRUE, 
+                                        legend = "right",                         
+                                        heights = c(1, 1, 1),
+                                        align = "v")
+
+combined_plots_volume <- ggarrange(axial_plot_volume, saggital_plot_volume, coronal_plot_volume, 
+                                        nrow = 1, 
+                                        common.legend = TRUE, 
+                                        legend = "right",                         
+                                        heights = c(1, 1, 1),
+                                        align = "v")
+
+# Add titles
+combined_plots_sensitivity <- annotate_figure(combined_plots_sensitivity,
+                                              top = text_grob("Sensitivity (example data)", size = 12, face = "bold", hjust = 1.7))
+
+combined_plots_volume <- annotate_figure(combined_plots_volume,
+                                              top = text_grob("Volume (example data)", size = 12, face = "bold", hjust = 1.7))
+
+
+final_combined_plot <- ggarrange(combined_plots_sensitivity, combined_plots_volume,
+                                 ncol = 1, 
+                                 nrow = 2,
+                                 heights = c(1, 1))
+
+# Print plot
+print(final_combined_plot)
+
+```
+
