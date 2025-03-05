@@ -1,6 +1,7 @@
 # medical_figures
 How to create medical figures for visualizing research data
 
+# Creating a figure from the beginning
 # Step 1: 
 Find or create a template of what you want to visualize.
 
@@ -19,7 +20,8 @@ Merge the dataset with additional data in R and visualize it using geom_polygon 
 
 
 
-Example use: See R-code and example data to create a brain figure in 3 planes. Please cite our work if want to apply the figure to your own data:
+# Using our data to create a brain figure
+See R-code and example data to create a brain figure in 3 planes. Open the R-markdown file and load the csv-files with the x-y coordinates for the brain figures. You can replace our example data with your own data. Please cite our work if you want to apply the figure to your own data:
 
 Krag, C. H., Müller, F. C., Gandrup, K. L., Raaschou, H., Andersen, M. B., Brejnebøl, M. W., Sagar, M. V., Bojsen, J. A., Rasmussen, B. S., Graumann, O., Nielsen, M., Kruuse, C., & Boesen, M. (2023). Diagnostic test accuracy study of a commercially available deep learning algorithm for ischemic lesion detection on brain MRIs in suspected stroke patients from a non-comprehensive stroke center. European Journal of Radiology, 168, 111126. Artikel 111126. https://doi.org/10.1016/j.ejrad.2023.111126
 
