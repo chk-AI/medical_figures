@@ -1,5 +1,5 @@
 # medical_figures
-Medical figures with research data
+How to create medical figures for visualizing research data
 
 # Step 1: 
 Find or create a template of what you want to visualize.
