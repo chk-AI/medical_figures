@@ -21,9 +21,11 @@ Merge the dataset with additional data in R and visualize it using geom_polygon 
 
 
 # Using our code to create a brain figure
-Open the R-markdown file and load the csv-files with the x-y coordinates for the brain figures. You can replace our example data with your own data. Please cite our work if you want to apply the figure to your own data:
+Open the R-markdown file and load the csv-files with the x-y coordinates for the brain figures. You can replace our example data with your own data. 
+
+![image](https://github.com/user-attachments/assets/a4ea3322-20bc-475c-a68e-e31d44c7566b)
+
+Please cite our work if you want to apply the figure to your own data:
 
 Krag, C. H., Müller, F. C., Gandrup, K. L., Raaschou, H., Andersen, M. B., Brejnebøl, M. W., Sagar, M. V., Bojsen, J. A., Rasmussen, B. S., Graumann, O., Nielsen, M., Kruuse, C., & Boesen, M. (2023). Diagnostic test accuracy study of a commercially available deep learning algorithm for ischemic lesion detection on brain MRIs in suspected stroke patients from a non-comprehensive stroke center. European Journal of Radiology, 168, 111126. Artikel 111126. https://doi.org/10.1016/j.ejrad.2023.111126
 
-
-![image](https://github.com/user-attachments/assets/a4ea3322-20bc-475c-a68e-e31d44c7566b)
